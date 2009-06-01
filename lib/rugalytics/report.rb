@@ -71,8 +71,15 @@ module Rugalytics
 
         points = []
         while (date_point = lines[index]) && (date = date_from_point(date_point))
-          point = date_point.sub(date,'')
-          points << point.tr('",','').to_i
+          point = date_point.sub(date,'').tr('",','')
+          # Check the point type
+          if /:/.match(point) # Time
+            points << Time.parse(point)
+          elsif point.to_f == point.to_i # Integer
+            points << point.to_i
+          else # Float
+            points << point.to_f
+          end
           index = index.next
         end
 
